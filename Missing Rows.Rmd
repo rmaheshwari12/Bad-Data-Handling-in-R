@@ -1,0 +1,43 @@
+#Cleaning Bad Data with R - 2 - Missing Rows
+#Rushikesh Maheshwari
+#resource Link: https://www.linkedin.com/learning/cleaning-bad-data-in-r/missing-values?u=2343682
+
+#Loading the tidyverse directory
+```{r}
+library(tidyverse)
+```
+
+
+#Setting the directory and Importing Data
+```{r}
+setwd("C:/Users/Admin/Documents/Bad-Data-Handling-in-R")
+
+d <- read_csv("publiclands.csv")
+head(d)
+```
+
+#Checking the row numbers in the data set!
+```{r}
+# How many rows are there?
+nrow(d)
+unique(d$State)
+```
+#So we have about 8 states and thier corresponding values missing. So lets create another table below
+
+```{r}
+# Insert missing states
+states <- tibble(State=c('Connecticut', 'Delaware', 'Hawaii', 'Iowa', 'Maryland', 
+                                 'Massachusetts','New Jersey', 'Rhode Island'), 
+                         PublicLandAcres=c(0,0,0,0,0,0,0,0))
+```
+#Now lets combine these two tables by rows using rbind command
+```{r}
+d <- rbind(d,states)
+view(d)
+```
+#Now lets sort this data by state names
+```{r}
+d <- d[order(d$State),]
+view(d)
+```
+#Now we have the data sorted by state name with corresponding Public Land acre values
