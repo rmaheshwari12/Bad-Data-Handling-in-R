@@ -1,0 +1,82 @@
+---
+title: "Missing Values_Rushi"
+author: "Rushikesh Maheshwari"
+date: "June 30, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+#Cleaning Bad Data with R - 1 - Missing Values
+#Rushikesh Maheshwari
+#resource Link: https://www.linkedin.com/learning/cleaning-bad-data-in-r/missing-values?u=2343682
+
+
+```{r}
+setwd("C:/Users/Admin/Documents/Handling Bad data with R")
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+#Here we are trying to handle the missing values in a data set with tidyverse package
+
+#Loading the data
+```{r}
+d <- read_csv("heating.csv")
+```
+
+# Tidy the data
+```{r}
+d <- gather(d,key="age", value = "homes", -Source,convert = FALSE) 
+#This function helps us to reshape the data so as to perform analysis
+summary(d)
+```
+
+#Mutating homes to numeric
+```{r}
+mutate(d,homes = as.numeric(homes))
+```
+#The error above means that there are NA's introduced because some of the data could not be converted into numeric format
+
+# Find those values where we have NA
+```{r}
+filter(d,is.na(as.numeric(homes)))
+```
+
+#We now mutate these non-numerical data into numerical value below
+```{r}
+d %>% 
+  mutate(homes = ifelse(homes ==".",0,homes)) %>%
+  mutate(homes = ifelse(homes == "Z",0,homes)) %>%
+  mutate(homes = as.numeric(homes)) %>%
+  filter(Source == "Cooking stove")
+```
+#With filter function, we could cross-check if the NA's are converted into numeric values or not. Now that they are, we have to store the result back, permanently 
+
+```{r}
+d = d %>% 
+  mutate(homes = ifelse(homes ==".",0,homes)) %>%
+  mutate(homes = ifelse(homes == "Z",0,homes)) %>%
+  mutate(homes = as.numeric(homes))
+
+summary(d)
+```
+
+#Now we see no NA values in Data !
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
